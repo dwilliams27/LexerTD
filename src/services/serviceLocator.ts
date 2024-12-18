@@ -1,3 +1,4 @@
+import { Game } from "@/game";
 import chalk from "chalk";
 
 export abstract class LocatableService {
@@ -31,9 +32,11 @@ type ServiceClass<T extends LocatableService> = {
 
 export class ServiceLocator {
   private _services: Map<string, LocatableService>;
+  game: Game;
 
-  constructor() {
+  constructor(game: Game) {
     this._services = new Map();
+    this.game = game;
   }
 
   addService<T extends LocatableService>(serviceClass: ServiceClass<T>, instance: T): void {

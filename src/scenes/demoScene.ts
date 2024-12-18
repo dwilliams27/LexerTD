@@ -1,6 +1,11 @@
+import { LexerScene } from "@/scenes/lexerScene";
+import { MAIN_MENU_SCENE } from "@/scenes/mainMenuScene";
 import { GlobalImages } from "@/services/graphicsService";
+import { SceneService } from "@/services/sceneService";
 
-export class DemoScene extends Phaser.Scene {
+export const DEMO_SCENE = 'DemoScene';
+
+export class DemoScene extends LexerScene {
   private scoreText!: Phaser.GameObjects.Text;
   private moneyText!: Phaser.GameObjects.Text;
   private money: number = 100;
@@ -8,16 +13,18 @@ export class DemoScene extends Phaser.Scene {
   private currentWave: number = 1;
 
   constructor() {
-    super({ key: 'DemoScene' });
+    super(DEMO_SCENE);
   }
 
   preload(): void {
-    Object.values(GlobalImages).forEach((key) => {
-      this.load.image(key, key);
+    Object.keys(GlobalImages).forEach((key) => {
+      // @ts-ignore
+      this.load.image(key, GlobalImages[key]);
     });
   }
 
   create(): void {
+    super.create();
     this.createMap();
     this.setupUI();
     this.initializeGameSystems();
@@ -26,7 +33,7 @@ export class DemoScene extends Phaser.Scene {
   private createMap(): void {
     for (let x = 0; x < 10; x++) {
       for (let y = 0; y < 8; y++) {
-        this.add.image(x * 80, y * 80, 'tile');
+        this.add.image(x * 80, y * 80, 'bg_tile').setScale(0.075);
       }
     }
   }
@@ -51,7 +58,7 @@ export class DemoScene extends Phaser.Scene {
       })
       .setInteractive()
       .on('pointerup', () => {
-        this.scene.start('MainMenuScene');
+        this.serviceLocator.getService(SceneService).transitionActiveScene(MAIN_MENU_SCENE);
       });
   }
 

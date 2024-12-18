@@ -1,43 +1,48 @@
-export class MainMenuScene extends Phaser.Scene {
-  constructor() {
-    super({ key: 'MainMenuScene' });
-  }
+import { DEMO_SCENE } from "@/scenes/demoScene";
+import { LexerScene } from "@/scenes/lexerScene";
+import { SceneService } from "@/services/sceneService";
 
-  preload(): void {
-    this.load.image('play-button', 'assets/play-button.png');
+export const MAIN_MENU_SCENE = 'MainMenuScene';
+
+export class MainMenuScene extends LexerScene {
+  constructor() {
+    super(MAIN_MENU_SCENE);
   }
 
   create(): void {
+    super.create();
     const centerX = this.cameras.main.centerX;
     const centerY = this.cameras.main.centerY;
 
-    this.add
-      .text(centerX, centerY - 100, 'Tower Defense', {
-        fontSize: '48px',
-        color: '#fff',
-      })
-      .setOrigin(0.5);
+    this.graphicsService.createText(
+      this,
+      centerX,
+      centerY - 150,
+      "LexerTD",
+      { fontSize: '102px' }
+    ).setOrigin(0.5);
 
-    const playButton = this.add
-      .text(centerX, centerY + 50, 'Play Game', {
-        fontSize: '32px',
-        color: '#fff',
-        backgroundColor: '#4a90e2',
+    const playButton = this.graphicsService.createText(
+      this,
+      centerX,
+      centerY + 50,
+      "Start",
+      {
         padding: { x: 20, y: 10 },
-      })
-      .setOrigin(0.5)
-      .setInteractive();
+        backgroundColor: '#4a90e2',
+      }
+    ).setOrigin(0.5).setInteractive();
 
     playButton.on('pointerover', () => {
-      playButton.setStyle({ color: '#ff0' });
+      playButton.setStyle({ backgroundColor: '#3a80d2' });
     });
 
     playButton.on('pointerout', () => {
-      playButton.setStyle({ color: '#fff' });
+      playButton.setStyle({ backgroundColor: '#4a90e2' });
     });
 
     playButton.on('pointerup', () => {
-      this.scene.start('Level1Scene');
+      this.serviceLocator.getService(SceneService).transitionActiveScene(DEMO_SCENE);
     });
   }
 }

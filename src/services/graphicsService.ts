@@ -2,22 +2,24 @@ import { Tower } from "@/entities/towers/tower";
 import { LocatableService, ServiceLocator } from "@/services/serviceLocator";
 import { Scene } from "phaser";
 
-export enum GlobalImages {
+export const GlobalImages = {
   // Towers
-  "books" = "assets/books.png",
+  "books": "/assets/images/books.png",
 
   // UI
-  "start_buttom" = "assets/start_button.png",
-  "bg_tile" = "assets/tile.png",
-}
+  "start_buttom": "/assets/images/start_button.png",
+  "bg_tile": "/assets/images/tile.png",
+} as const;
 
-export enum GlobalGraphics {
-  "towers" = "towers",
-}
+export const GlobalGraphics = {
+  "towers": "towers",
+} as const;
 
-export enum GlobalSpriteGroups {
-  "towers" = "towers",
-}
+export type TGlobalGraphics = keyof typeof GlobalGraphics;
+
+export const GlobalSpriteGroups = {
+  "towers": "towers",
+} as const;
 
 export class GraphicsService extends LocatableService {
   static readonly serviceName = "GraphicsService";
@@ -55,21 +57,21 @@ export class GraphicsService extends LocatableService {
     return this.initialized;
   }
 
-  addGraphics(category: GlobalGraphics, key: string, graphics: Phaser.GameObjects.Graphics): void {
+  addGraphics(category: TGlobalGraphics, key: string, graphics: Phaser.GameObjects.Graphics): void {
     if (!this.graphics[category]) {
       this.graphics[category] = {};
     }
     this.graphics[category][key] = graphics;
   }
 
-  getGraphics(category: GlobalGraphics, key: string): Phaser.GameObjects.Graphics {
+  getGraphics(category: TGlobalGraphics, key: string): Phaser.GameObjects.Graphics {
     if (!this.graphics[category]) {
       throw new Error(`Graphics category ${category} not found`);
     }
     return this.graphics[category][key];
   }
 
-  addTexture(category: GlobalGraphics, key: string, texture: Phaser.GameObjects.Graphics): void {
+  addTexture(category: TGlobalGraphics, key: string, texture: Phaser.GameObjects.Graphics): void {
     texture.generateTexture(key);
     if (!this.graphics[category]) {
       this.graphics[category] = {};
@@ -77,14 +79,31 @@ export class GraphicsService extends LocatableService {
     this.graphics[category][key] = texture;
   }
 
-  getTexture(category: GlobalGraphics, key: string): Phaser.GameObjects.Graphics {
+  getTexture(category: TGlobalGraphics, key: string): Phaser.GameObjects.Graphics {
     if (!this.textures[category]) {
       throw new Error(`Texture category ${category} not found`);
     }
     return this.textures[category][key];
   }
 
-  // Helpers
+  // Text Helpers
+  public createText(
+    scene: Phaser.Scene, 
+    x: number, 
+    y: number, 
+    text: string | string[], 
+    style?: Partial<Phaser.Types.GameObjects.Text.TextStyle>
+  ) {
+    return scene.add.text(x, y, text, {
+      fontFamily: 'm5x7',
+      fontSize: '32px',
+      // Revisit this
+      resolution: 10,
+      ...style
+    });
+  };
+
+  // Tower Helpers
   public genTowerRange(tower: Tower, color: number = 0x00ff00, alpha: number = 0.2): Phaser.GameObjects.Graphics {
     if (!this.activeScene) {
       throw new Error("Scene not initialized");

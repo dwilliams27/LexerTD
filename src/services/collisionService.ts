@@ -7,11 +7,9 @@ import { Scene } from "phaser";
 export class CollisionService extends LocatableService {
   static readonly serviceName = "CollisionService";
   private initialized: boolean = false;
-  private scene: Scene;
 
-  constructor(serviceLocator: ServiceLocator, scene: Scene) {
+  constructor(serviceLocator: ServiceLocator) {
     super(serviceLocator);
-    this.scene = scene;
     this.init();
   }
 
