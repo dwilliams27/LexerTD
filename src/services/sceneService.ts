@@ -1,9 +1,10 @@
+import { LexerScene } from "@/scenes/lexerScene";
 import { LocatableService, ServiceLocator } from "@/services/serviceLocator";
 
 export class SceneService extends LocatableService {
   static readonly serviceName = "SceneService";
   private initialized: boolean = false;
-  private activeScene?: Phaser.Scene;
+  private activeScene?: LexerScene;
 
   constructor(serviceLocator: ServiceLocator) {
     super(serviceLocator);
@@ -18,7 +19,7 @@ export class SceneService extends LocatableService {
     return this.initialized;
   }
 
-  setActiveScene(scene: Phaser.Scene): void {
+  setActiveScene(scene: LexerScene): void {
     this.activeScene = scene;
   }
 
@@ -31,7 +32,10 @@ export class SceneService extends LocatableService {
     });
   }
 
-  getActiveScene(): Phaser.Scene | undefined {
+  getActiveScene(): LexerScene {
+    if (!this.activeScene) {
+      throw new Error('No active scene!');
+    }
     return this.activeScene;
   }
 
